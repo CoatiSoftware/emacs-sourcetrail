@@ -132,15 +132,21 @@
     (process-send-string emacs-coati-client message))
 
 (defun coati-server-start ()
-;;  (interactive)
   (if (null emacs-coati-server)
-      (setq emacs-coati-server
-            (make-network-process :name (or emacs-coati-server-name "*coati-server")
-                                  :server t
-                                  :service (or emacs-coati-port-emacs 6666)
-                                  :family 'ipv4
-                                  :filter 'emacs-coati-listen-filter)))
-)
+	  (progn
+		(add-hook 'kill-emacs-hook 'coati-server-stop)
+		(setq emacs-coati-server
+			  (make-network-process :name (or emacs-coati-server-name "*coati-server")
+									:server t
+									:service (or emacs-coati-port-emacs 6666)
+									:family 'ipv4
+									:sentinel 'emacs-coati-sentinel
+									:filter 'emacs-coati-listen-filter)))))
+
+(defun emacs-coati-sentinel (proc msg)
+  (when (string= msg "connection broken by remote peer\n")
+    (process-buffer proc)
+	(coati-server-stop)))
 
 (defun emacs-coati-listen-filter (proc string)
   (process-buffer proc)
@@ -170,10 +176,11 @@
 
 (defun coati-server-stop ()
   "Stops TCP Listener for Coati"
-;;  (interactive)
-  (delete-process emacs-coati-server-name)
-  (setq emacs-coati-server nil)
-)
+  (remove-hook 'kill-emacs-hook 'coati-server-stop)
+  (if emacs-coati-server
+	(progn
+	  (delete-process emacs-coati-server-name)
+	  (setq emacs-coati-server nil))))
 
 ;;;###autoload
 (defun coati-send-location ()
