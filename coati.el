@@ -1,10 +1,11 @@
-;;; coati.el --- Coati for Emacs                     -*- lexical-binding: t; -*-
+;;; coati.el --- Communication with Coati                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016
 
 ;; Author: Andreas Stallinger <astallinger@coati.io>
-;; Keywords:
+;; Keywords: external, tool
 ;; Version: 0.1
+;; Package-Requires: ((emacs "24.4"))
 
 ;; License:
 
@@ -34,166 +35,161 @@
 
 ;;; Commentary:
 
-;emacs-coati
-;===========
+;;emacs-coati
+;;===========
 
-;emacs-coati is a plugin for Emacs to communicate with Coati_.
+;;emacs-coati is a plugin for Emacs to communicate with Coati_.
 
-;.. _Coati: https://coati.io
+;;.. _Coati: https://coati.io
 
-;Install
-;-------
+;;Install
+;;-------
 
-;Usage
-;-----
+;;Usage
+;;-----
 
-;From Coati to Emacs
-;~~~~~~~~~~~~~~~~~~~
+;;From Coati to Emacs
+;;~~~~~~~~~~~~~~~~~~~
 
-;* enable coati-mode in Emacs
-;* Right click in coati -> **Set IDE Curor**
-;* In the Emacs should now open the file and put the cursor in the position form coati.
+;;* enable coati-mode in Emacs
+;;* Right click in coati -> **Set IDE Curor**
+;;* In the Emacs should now open the file and put the cursor in the position form coati.
 
-;From Emacs to Coati
-;~~~~~~~~~~~~~~~~~~~
+;;From Emacs to Coati
+;;~~~~~~~~~~~~~~~~~~~
 
-;* Navigate your cursor to the location in the text.
-;* Sent location to coati
+;;* Navigate your cursor to the location in the text.
+;;* Sent location to coati
 
-  ;+ Press **M-x** and enter **coati-send-loation**
-  ;+ bind **coati-send-location** to a key sequence and use it.
+;; ;+ Press **M-x** and enter **coati-send-loation**
+;; ;+ bind **coati-send-location** to a key sequence and use it.
 
-;Preferences
-;-----------
+;;Preferences
+;;-----------
 
-;* **M-x** customize
-;* search for coati
-;* 3 Settins should be displayed now
+;;* **M-x** customize
+;;* search for coati
+;;* 3 Settins should be displayed now
 
-;Emacs Coati Ip
-;~~~~~~~~~~~~~~
+;;Emacs Coati Ip
+;;~~~~~~~~~~~~~~
 
-;Ip address for the Tcp communcation, default is ``localhost``
+;;Ip address for the Tcp communcation, default is ``localhost``
 
-;Emacs Coati Port Coati
-;~~~~~~~~~~~~~~~~~~~~~~
+;;Emacs Coati Port Coati
+;;~~~~~~~~~~~~~~~~~~~~~~
 
-;Port Coati listens to, default is ``6667``
+;;Port Coati listens to, default is ``6667``
 
-;Emacs Coati Port Emacs
-;~~~~~~~~~~~~~~~~~~~~~~
+;;Emacs Coati Port Emacs
+;;~~~~~~~~~~~~~~~~~~~~~~
 
-;Port Coati listens to, default is ``6666``
+;;Port Coati listens to, default is ``6666``
 
 
 ;;; Code:
 (require 'subr-x)
 
 (defgroup coati nil
-  "Settings for the coati plugin"
+  "Settings for the coati plugin."
   :group 'external)
 
-(defcustom emacs-coati-port-coati 6667
-  "Port Coati listens to"
+(defcustom coati-port-coati 6667
+  "Port Coati listens to."
   :group 'coati
   :type '(number))
 
-(defcustom emacs-coati-port-emacs 6666
-  "Port for listening to Coati"
+(defcustom coati-port-emacs 6666
+  "Port for listening to Coati."
   :group 'coati
   :type '(number))
 
-(defcustom emacs-coati-ip "localhost"
-  "Ip for communication with coati"
+(defcustom coati-ip "localhost"
+  "Ip for communication with coati."
   :group 'coati
   :type '(string))
 
-(defconst emacs-coati-server-name "coati-server")
-(defvar emacs-coati-server nil)
-(defvar emacs-coati-client nil)
-(defvar emacs-coati-col nil)
-(defvar emacs-coati-row nil)
-(defvar emacs-coati-file nil)
+(defconst coati-server-name "coati-server")
+(defconst coati-server-buffer "*-coati-server-buffer*")
+(defvar coati-server nil)
+(defvar coati-client nil)
+(defvar coati-col nil)
+(defvar coati-row nil)
+(defvar coati-file nil)
 (defvar coati-message nil)
 
-(defun buildTokenLocationMessage ()
-  "building a formated message for sending to coati"
-  (setq emacs-coati-col (number-to-string (current-column)))
-  (setq emacs-coati-row (number-to-string (line-number-at-pos)))
-  (setq emacs-coati-file (buffer-file-name))
-  (setq coati-message (mapconcat 'identity (list "setActiveToken" emacs-coati-file emacs-coati-row emacs-coati-col) ">>"))
+(defun buildTokenLocationMessage nil
+  "Building a formated message for sending to coati."
+  (setq coati-col (number-to-string (current-column)))
+  (setq coati-row (number-to-string (line-number-at-pos)))
+  (setq coati-file (buffer-file-name))
+  (setq coati-message (mapconcat 'identity (list "setActiveToken" coati-file coati-row coati-col) ">>"))
   (setq coati-message (mapconcat 'identity (list coati-message "<EOM>") "")))
 
-(defun emacs-coati-send-message(message)
-  "sending message to coati"
-  (setq emacs-coati-client
+(defun coati-send-message(message)
+  "Sending message to coati."
+  (setq coati-client
     (open-network-stream "coati-client"
-			"*coati-client*" emacs-coati-ip emacs-coati-port-coati))
-    (process-send-string emacs-coati-client message))
+			"*coati-client*" coati-ip coati-port-coati))
+    (process-send-string coati-client message))
 
-(defun coati-server-start ()
-  (if (null emacs-coati-server)
-	  (progn
-		(add-hook 'kill-emacs-hook 'coati-server-stop)
-		(setq emacs-coati-server
-			  (make-network-process :name (or emacs-coati-server-name "*coati-server")
-									:server t
-									:service (or emacs-coati-port-emacs 6666)
-									:family 'ipv4
-									:sentinel 'emacs-coati-sentinel
-									:filter 'emacs-coati-listen-filter)))))
+(defun coati-server-start nil
+  "Start tcp server."
+  (unless coati-server
+	(setq coati-server
+	  (make-network-process :name (or coati-server-name "*coati-server")
+							:server t
+							:service (or coati-port-emacs 6666)
+							:family 'ipv4
+							:buffer coati-server-buffer
+							:filter 'coati-listen-filter))
+	(if coati-server
+	  (set-process-query-on-exit-flag coati-server nil)
+	  (error "Could not start server process"))))
 
-(defun emacs-coati-sentinel (proc msg)
-  (when (string= msg "connection broken by remote peer\n")
-    (process-buffer proc)
-	(coati-server-stop)))
-
-(defun emacs-coati-listen-filter (proc string)
+(defun coati-listen-filter (proc string)
+  "Tcp listener filter.  No need for PROC.  STRING is the command send from coati."
   (process-buffer proc)
   (if (string-suffix-p "<EOM>" string)
-	  ;; split message
 	  (progn
+	    ;; split message
 		(setq coati-message (split-string (string-remove-suffix "<EOM>" string) ">>"))
-		(if (string= (car coati-message) "moveCursor")
-			;;moveCuror message
-			(progn
-			  ;; filepath
-			  (setq emacs-coati-file (nth 1 coati-message))
-			  ;; row and col
-			  (setq emacs-coati-row (string-to-number (nth 2 coati-message)))
-			  (setq emacs-coati-col (string-to-number (nth 3 coati-message)))
-			  ;; open file
-			  (find-file emacs-coati-file)
-			  ;; move cursor
-			  (forward-line (- emacs-coati-row (line-number-at-pos)))
-			  (move-to-column emacs-coati-col)
-			)
+		(when (string= (car coati-message) "moveCursor")
+		  ;;moveCuror message
+		  ;; filepath
+		  (setq coati-file (nth 1 coati-message))
+		  ;; row and col
+		  (setq coati-row (string-to-number (nth 2 coati-message)))
+		  (setq coati-col (string-to-number (nth 3 coati-message)))
+		  ;; open file
+		  (find-file coati-file)
+		  ;; move cursor
+		  (forward-line (- coati-row (line-number-at-pos)))
+		  (move-to-column coati-col)
 		)
 	)
-	(message "%s" (concat "Could not process the message from coati" string))
+	(message "Could not process the message from coati: %s" string)
 	)
 )
 
-(defun coati-server-stop ()
-  "Stops TCP Listener for Coati"
-  (remove-hook 'kill-emacs-hook 'coati-server-stop)
-  (if emacs-coati-server
-	(progn
-	  (delete-process emacs-coati-server-name)
-	  (setq emacs-coati-server nil))))
+(defun coati-server-stop nil
+  "Stops TCP Listener for Coati."
+  (when coati-server
+    (delete-process coati-server-name)
+	(setq coati-server nil)))
 
 ;;;###autoload
-(defun coati-send-location ()
-  "Sends current location to Coati"
+(defun coati-send-location nil
+  "Sends current location to Coati."
   (interactive)
-  (emacs-coati-send-message (buildTokenLocationMessage))
+  (coati-send-message (buildTokenLocationMessage))
 )
 
 ;;;###autoload
 (define-minor-mode coati-mode
-  "Start/stop coati mode"
+  "Start/stop coati mode."
   :global t
-  :lighter ""
+  :lighter " coati"
   ; value of coati-mode is toggled before this implicitly
   (if coati-mode (coati-server-start) (coati-server-stop)))
 
