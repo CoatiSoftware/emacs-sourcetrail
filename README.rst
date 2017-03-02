@@ -32,7 +32,7 @@ Preferences
 
 * **M-x** customize
 * search for coati
-* 3 Settins should be displayed now
+* 3 Settings should be displayed now
 
 Emacs Coati Ip
 ~~~~~~~~~~~~~~
