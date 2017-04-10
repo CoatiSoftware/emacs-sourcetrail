@@ -1,8 +1,8 @@
-;;; sourcetrail.el --- Communication with SoureTrail                     -*- lexical-binding: t; -*-
+;;; sourcetrail.el --- Communication with Sourcetrail                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016
 
-;; Author: Andreas Stallinger <astallinger@sourcetrail.io>
+;; Author: Andreas Stallinger <astallinger@sourcetrail.com>
 ;; Keywords: external, tool
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "24.4"))
@@ -12,7 +12,7 @@
 ;; This file is not part of GNU Emacs
 
 ;; The MIT License (MIT)
-;; Copyright (c) 2016 SoureTrail Software OG
+;; Copyright (c) 2016 Coati Software OG
 
 ;; Permission is hereby granted, free of charge, to any person obtaining
 ;; a copy of this software and associated documentation files (the "Software"),
@@ -38,9 +38,9 @@
 ;;emacs-sourcetrail
 ;;===========
 
-;;emacs-sourcetrail is a plugin for Emacs to communicate with SoureTrail_.
+;;emacs-sourcetrail is a plugin for Emacs to communicate with Sourcetrail_.
 
-;;.. _SoureTrail: https://sourcetrail.io
+;;.. _Sourcetrail: https://sourcetrail.com
 
 ;;Install
 ;;-------
@@ -48,14 +48,14 @@
 ;;Usage
 ;;-----
 
-;;From SoureTrail to Emacs
+;;From Sourcetrail to Emacs
 ;;~~~~~~~~~~~~~~~~~~~
 
 ;;* enable sourcetrail-mode in Emacs
 ;;* Right click in sourcetrail -> **Set IDE Curor**
 ;;* In the Emacs should now open the file and put the cursor in the position form sourcetrail.
 
-;;From Emacs to SoureTrail
+;;From Emacs to Sourcetrail
 ;;~~~~~~~~~~~~~~~~~~~
 
 ;;* Navigate your cursor to the location in the text.
@@ -71,20 +71,20 @@
 ;;* search for sourcetrail
 ;;* 3 Settins should be displayed now
 
-;;Emacs SoureTrail Ip
+;;Emacs Sourcetrail Ip
 ;;~~~~~~~~~~~~~~
 
 ;;Ip address for the Tcp communcation, default is ``localhost``
 
-;;Emacs SoureTrail Port SoureTrail
+;;Emacs Sourcetrail Port Sourcetrail
 ;;~~~~~~~~~~~~~~~~~~~~~~
 
-;;Port SoureTrail listens to, default is ``6667``
+;;Port Sourcetrail listens to, default is ``6667``
 
-;;Emacs SoureTrail Port Emacs
+;;Emacs Sourcetrail Port Emacs
 ;;~~~~~~~~~~~~~~~~~~~~~~
 
-;;Port SoureTrail listens to, default is ``6666``
+;;Port Sourcetrail listens to, default is ``6666``
 
 
 ;;; Code:
@@ -95,12 +95,12 @@
   :group 'external)
 
 (defcustom sourcetrail-port-sourcetrail 6667
-  "Port SoureTrail listens to."
+  "Port Sourcetrail listens to."
   :group 'sourcetrail
   :type '(number))
 
 (defcustom sourcetrail-port-emacs 6666
-  "Port for listening to SoureTrail."
+  "Port for listening to Sourcetrail."
   :group 'sourcetrail
   :type '(number))
 
@@ -184,14 +184,14 @@
 )
 
 (defun sourcetrail-server-stop nil
-  "Stops TCP Listener for SoureTrail."
+  "Stops TCP Listener for Sourcetrail."
   (when sourcetrail-server
     (delete-process sourcetrail-server-name)
 	(setq sourcetrail-server nil)))
 
 ;;;###autoload
 (defun sourcetrail-send-location nil
-  "Sends current location to SoureTrail."
+  "Sends current location to Sourcetrail."
   (interactive)
   (sourcetrail-send-message (buildTokenLocationMessage))
 )
