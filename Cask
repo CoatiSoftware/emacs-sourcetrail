@@ -1,7 +1,7 @@
 (source gnu)
 (source melpa)
 
-(package-file "coati.el")
+(package-file "sourcetrail.el")
 
 (development
  (depends-on "f")

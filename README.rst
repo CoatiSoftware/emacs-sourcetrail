@@ -1,9 +1,9 @@
-emacs-coati
+emacs-sourcetrail
 ===========
 
-emacs-coati is a plugin for Emacs to communicate with Coati_.
+emacs-sourcetrail is a plugin for Emacs to communicate with SoureTrail_.
 
-.. _Coati: https://coati.io
+.. _SoureTrail: https://sourcetrail.io
 
 Install
 -------
@@ -11,41 +11,41 @@ Install
 Usage
 -----
 
-From Coati to Emacs
+From SoureTrail to Emacs
 ~~~~~~~~~~~~~~~~~~~
 
-* enable coati-mode in Emacs
-* Right click in coati -> **Set IDE Curor**
-* In the Emacs should now open the file and put the cursor in the position form coati.
+* enable sourcetrail-mode in Emacs
+* Right click in sourcetrail -> **Set IDE Curor**
+* In the Emacs should now open the file and put the cursor in the position form sourcetrail.
 
-From Emacs to Coati
+From Emacs to SoureTrail
 ~~~~~~~~~~~~~~~~~~~
 
 * Navigate your cursor to the location in the text.
-* Sent location to coati
+* Sent location to sourcetrail
 
-  + Press **M-x** and enter **coati-send-loation**
-  + bind **coati-send-location** to a key sequence and use it.
+  + Press **M-x** and enter **sourcetrail-send-loation**
+  + bind **sourcetrail-send-location** to a key sequence and use it.
 
 Preferences
 -----------
 
 * **M-x** customize
-* search for coati
+* search for sourcetrail
 * 3 Settings should be displayed now
 
-Emacs Coati Ip
+Emacs SoureTrail Ip
 ~~~~~~~~~~~~~~
 
 Ip address for the Tcp communcation, default is ``localhost``
 
-Emacs Coati Port Coati
+Emacs SoureTrail Port SoureTrail
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Port Coati listens to, default is ``6667``
+Port SoureTrail listens to, default is ``6667``
 
-Emacs Coati Port Emacs
+Emacs SoureTrail Port Emacs
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Port Coati listens to, default is ``6666``
+Port SoureTrail listens to, default is ``6666``
 
