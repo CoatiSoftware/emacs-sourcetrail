@@ -1,9 +1,9 @@
 emacs-sourcetrail
 ===========
 
-emacs-sourcetrail is a plugin for Emacs to communicate with SoureTrail_.
+emacs-sourcetrail is a plugin for Emacs to communicate with Sourcetrail_.
 
-.. _SoureTrail: https://sourcetrail.io
+.. _Sourcetrail: https://sourcetrail.io
 
 Install
 -------
@@ -11,14 +11,14 @@ Install
 Usage
 -----
 
-From SoureTrail to Emacs
+From Sourcetrail to Emacs
 ~~~~~~~~~~~~~~~~~~~
 
 * enable sourcetrail-mode in Emacs
 * Right click in sourcetrail -> **Set IDE Curor**
 * In the Emacs should now open the file and put the cursor in the position form sourcetrail.
 
-From Emacs to SoureTrail
+From Emacs to Sourcetrail
 ~~~~~~~~~~~~~~~~~~~
 
 * Navigate your cursor to the location in the text.
@@ -34,18 +34,18 @@ Preferences
 * search for sourcetrail
 * 3 Settings should be displayed now
 
-Emacs SoureTrail Ip
+Emacs Sourcetrail Ip
 ~~~~~~~~~~~~~~
 
 Ip address for the Tcp communcation, default is ``localhost``
 
-Emacs SoureTrail Port SoureTrail
+Emacs Sourcetrail Port Sourcetrail
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Port SoureTrail listens to, default is ``6667``
+Port Sourcetrail listens to, default is ``6667``
 
-Emacs SoureTrail Port Emacs
+Emacs Sourcetrail Port Emacs
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Port SoureTrail listens to, default is ``6666``
+Port Sourcetrail listens to, default is ``6666``
 
